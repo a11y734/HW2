@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import statsmodels.api as sm
 
 # 解決 matplotlib 中文顯示問題
-plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei', 'sans-serif']
+plt.rcParams['font.sans-serif'] = ['Noto Sans CJK TC', 'sans-serif']
 plt.rcParams['axes.unicode_minus'] = False  # 解決負號顯示問題
 
 
