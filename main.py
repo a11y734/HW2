@@ -16,7 +16,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import statsmodels.api as sm
 
-# 解決 matplotlib 中文顯示問題
+# 解決 matplotlib 中文顯示問題，並處理負號
 plt.rcParams['font.sans-serif'] = ['Noto Sans CJK TC', 'sans-serif']
 plt.rcParams['axes.unicode_minus'] = False  # 解決負號顯示問題
 
@@ -77,7 +77,7 @@ def train_model(df_processed):
 # Streamlit App UI
 # ==============================
 
-st.set_page_config(page_title="🚗 車價預測器", layout="wide")
+st.set_page_config(page_title="🚗 Car Price Predictor", layout="wide")
 st.title("Car Price Prediction Dataset")
 st.write("""
 本專案使用 Kaggle 上的汽車價格資料集，透過多元線性迴歸模型進行分析。
@@ -97,20 +97,20 @@ def user_input_features(importance_df, container):
     inputs = {}
     # 建立一個 widget 函數的對應字典
     widget_map = {
-        'enginesize': lambda: container.slider('引擎大小 (enginesize)', int(df_raw['enginesize'].min()), int(df_raw['enginesize'].max()), int(df_raw['enginesize'].mean())),
-        'curbweight': lambda: container.slider('車重 (curbweight)', int(df_raw['curbweight'].min()), int(df_raw['curbweight'].max()), int(df_raw['curbweight'].mean())),
-        'horsepower': lambda: container.slider('馬力 (horsepower)', int(df_raw['horsepower'].min()), int(df_raw['horsepower'].max()), int(df_raw['horsepower'].mean())),
-        'carwidth': lambda: container.slider('車寬 (carwidth)', float(df_raw['carwidth'].min()), float(df_raw['carwidth'].max()), float(df_raw['carwidth'].mean())),
-        'carlength': lambda: container.slider('車長 (carlength)', float(df_raw['carlength'].min()), float(df_raw['carlength'].max()), float(df_raw['carlength'].mean())),
-        'wheelbase': lambda: container.slider('軸距 (wheelbase)', float(df_raw['wheelbase'].min()), float(df_raw['wheelbase'].max()), float(df_raw['wheelbase'].mean())),
-        'citympg': lambda: container.slider('城市油耗 (citympg)', int(df_raw['citympg'].min()), int(df_raw['citympg'].max()), int(df_raw['citympg'].mean())),
-        'highwaympg': lambda: container.slider('高速油耗 (highwaympg)', int(df_raw['highwaympg'].min()), int(df_raw['highwaympg'].max()), int(df_raw['highwaympg'].mean())),
-        'boreratio': lambda: container.slider('缸徑比 (boreratio)', float(df_raw['boreratio'].min()), float(df_raw['boreratio'].max()), float(df_raw['boreratio'].mean())),
-        'aspiration': lambda: container.selectbox('進氣方式 (aspiration)', df_raw['aspiration'].unique()),
-        'enginelocation': lambda: container.selectbox('引擎位置 (enginelocation)', df_raw['enginelocation'].unique()),
-        'enginetype': lambda: container.selectbox('引擎類型 (enginetype)', df_raw['enginetype'].unique()),
-        'carbody': lambda: container.selectbox('車體 (carbody)', df_raw['carbody'].unique()),
-        'cylindernumber': lambda: container.selectbox('汽缸數 (cylindernumber)', df_raw['cylindernumber'].unique()),
+        'enginesize': lambda: container.slider('Engine Size (enginesize)', int(df_raw['enginesize'].min()), int(df_raw['enginesize'].max()), int(df_raw['enginesize'].mean())),
+        'curbweight': lambda: container.slider('Curb Weight (curbweight)', int(df_raw['curbweight'].min()), int(df_raw['curbweight'].max()), int(df_raw['curbweight'].mean())),
+        'horsepower': lambda: container.slider('Horsepower (horsepower)', int(df_raw['horsepower'].min()), int(df_raw['horsepower'].max()), int(df_raw['horsepower'].mean())),
+        'carwidth': lambda: container.slider('Car Width (carwidth)', float(df_raw['carwidth'].min()), float(df_raw['carwidth'].max()), float(df_raw['carwidth'].mean())),
+        'carlength': lambda: container.slider('Car Length (carlength)', float(df_raw['carlength'].min()), float(df_raw['carlength'].max()), float(df_raw['carlength'].mean())),
+        'wheelbase': lambda: container.slider('Wheelbase (wheelbase)', float(df_raw['wheelbase'].min()), float(df_raw['wheelbase'].max()), float(df_raw['wheelbase'].mean())),
+        'citympg': lambda: container.slider('City MPG (citympg)', int(df_raw['citympg'].min()), int(df_raw['citympg'].max()), int(df_raw['citympg'].mean())),
+        'highwaympg': lambda: container.slider('Highway MPG (highwaympg)', int(df_raw['highwaympg'].min()), int(df_raw['highwaympg'].max()), int(df_raw['highwaympg'].mean())),
+        'boreratio': lambda: container.slider('Bore Ratio (boreratio)', float(df_raw['boreratio'].min()), float(df_raw['boreratio'].max()), float(df_raw['boreratio'].mean())),
+        'aspiration': lambda: container.selectbox('Aspiration', df_raw['aspiration'].unique()),
+        'enginelocation': lambda: container.selectbox('Engine Location', df_raw['enginelocation'].unique()),
+        'enginetype': lambda: container.selectbox('Engine Type', df_raw['enginetype'].unique()),
+        'carbody': lambda: container.selectbox('Car Body', df_raw['carbody'].unique()),
+        'cylindernumber': lambda: container.selectbox('Cylinder Number', df_raw['cylindernumber'].unique()),
     }
     
     # 根據重要性排序來動態生成 UI
@@ -139,8 +139,8 @@ def user_input_features(importance_df, container):
 # --- 主頁面 Tabs ---
 tab1, tab2, tab3, tab4 = st.tabs([
     "🔍 單一特徵迴歸分析",
-    "🚀 特徵重要性與評估指標", 
-    "💰 預測車價",
+    "� 特徵重要性與評估指標",
+    "� 預測車價",
     "📈 整體模型預測效果",
 ])
 
@@ -150,33 +150,28 @@ with tab4: # 📈 整體模型預測效果
     
     X_test, y_test = test_data
     X_test_selected = X_test[selected_features]
-    y_pred_test = model.predict(X_test_selected)
 
     # 使用 statsmodels 來計算預測區間
     X_test_const = sm.add_constant(X_test_selected)
     X_train_const = sm.add_constant(X_train[selected_features])
     ols_model = sm.OLS(y_train, X_train_const).fit()
     predictions_summary = ols_model.get_prediction(X_test_const).summary_frame(alpha=0.05)
-    
-    fig, ax = plt.subplots(figsize=(8, 6))
 
-    # 再次設定字體以確保在 Streamlit Cloud 上正確顯示
-    plt.rcParams['font.sans-serif'] = ['Noto Sans CJK TC', 'sans-serif']
-    plt.rcParams['axes.unicode_minus'] = False
+    fig, ax = plt.subplots(figsize=(8, 6))
     
     # 為了正確繪製區間，我們需要根據預測值對所有相關資料進行排序
     plot_data = predictions_summary.join(y_test).sort_values('mean')
 
-    ax.scatter(y_pred_test, y_test, alpha=0.5, label="實際值 vs. 預測值")
-    ax.fill_between(plot_data['mean'], plot_data['obs_ci_lower'], plot_data['obs_ci_upper'], color='lightblue', alpha=0.4, label='95% 預測區間')
-    ax.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--', lw=2, label="完美預測線")
-    ax.set_xlabel("預測價格 (Predicted Price)")
-    ax.set_ylabel("實際價格 (Actual Price)")
-    ax.set_title("整體模型預測效果")
+    ax.scatter(plot_data['mean'], plot_data['price'], alpha=0.5, label="Actual vs. Predicted")
+    ax.fill_between(plot_data['mean'], plot_data['obs_ci_lower'], plot_data['obs_ci_upper'], color='lightblue', alpha=0.4, label='95% Prediction Interval')
+    ax.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--', lw=2, label="Perfect Prediction Line")
+    ax.set_xlabel("Predicted Price")
+    ax.set_ylabel("Actual Price")
+    ax.set_title("Overall Model Prediction Performance")
     ax.legend()
     ax.grid(True)
     st.pyplot(fig)
-    
+
     st.info("""
     **圖表說明：**
     - **藍色散佈點**：代表測試資料中，每一輛車的「預測價格」與「實際價格」的對應關係。
@@ -196,8 +191,8 @@ with tab2: # 🚀 特徵重要性與評估指標
     
     fig, ax = plt.subplots(figsize=(10, 8))
     ax.barh(importance_series.index, importance_series.values)
-    ax.set_xlabel("迴歸係數大小 (Coefficient Magnitude)")
-    ax.set_title("特徵重要性排序")
+    ax.set_xlabel("Coefficient Magnitude")
+    ax.set_title("Feature Importance Ranking")
     ax.grid(True, linestyle='--', alpha=0.6)
     st.pyplot(fig)
 
@@ -226,13 +221,13 @@ with tab1: # 🔍 單一特徵迴歸分析
 
     fig, ax = plt.subplots()
     sns.regplot(x=df_raw[selected_feature_for_plot], y=df_raw['price'], ax=ax, scatter_kws={'alpha':0.4})
-    
+
     ax.set_title(f"{selected_feature_for_plot} vs. Price")
     ax.set_xlabel(selected_feature_for_plot)
     ax.set_ylabel("Price")
     ax.grid(True)
     st.pyplot(fig)
-    
+
     st.info("""
     **圖表說明：**
     - **灰色散佈點**：代表資料集中每一輛車的原始數據。
