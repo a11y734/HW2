@@ -7,6 +7,12 @@
 - 了解模型自動篩選出的重要特徵及其對價格的影響。
 - 透過調整各項參數，即時獲得車價預測。
 
+## 🚀 Live Demo
+
+您可以在這裡體驗互動式的 Web App：
+
+**[https://iqb7xvfgrsp3d9mrbqvf9c.streamlit.app/](https://iqb7xvfgrsp3d9mrbqvf9c.streamlit.app/)**
+
 ## ✨ 技術棧
 
 - **資料分析與模型訓練**: Pandas, Scikit-learn, Statsmodels
