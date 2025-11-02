@@ -159,6 +159,10 @@ with tab4: # 📈 整體模型預測效果
     predictions_summary = ols_model.get_prediction(X_test_const).summary_frame(alpha=0.05)
     
     fig, ax = plt.subplots(figsize=(8, 6))
+
+    # 再次設定字體以確保在 Streamlit Cloud 上正確顯示
+    plt.rcParams['font.sans-serif'] = ['Noto Sans CJK TC', 'sans-serif']
+    plt.rcParams['axes.unicode_minus'] = False
     
     # 為了正確繪製區間，我們需要根據預測值對所有相關資料進行排序
     plot_data = predictions_summary.join(y_test).sort_values('mean')
